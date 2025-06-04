@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Set character encoding and viewport for responsive layout -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Socratic AI Chat</title>
+
+  <!-- Internal CSS styles for UI layout and appearance -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 80px auto;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      background-color: #ff9800;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #f57c00;
+    }
+
+    .response-section {
+      margin-top: 30px;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .output {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ask Socrates</h1>
+     <!-- User input field -->
+    <input type="text" id="question" placeholder="Type your philosophical question..." />
+    <button onclick="ask()">Ask</button>
+
+    <!-- Response section shows result returned from backend -->
+    <div class="response-section">
+      <div class="label">Predicted Category:</div>
+      <div id="category" class="output"></div>
+    <!-- Confidence score dynamically inserted here -->
+      <div class="label">Confidence Score:</div>
+      <div id="confidence" class="output"></div>
+    <!-- GPT-generated Socratic response -->
+      <div class="label">Socratic Response:</div>
+      <div id="response" class="output"></div>
+    </div>
+  </div>
+
+ <!-- JavaScript to handle the API request -->
+  <script>
+    async function ask() {
+      // Get user's question from input box
+      const question = document.getElementById("question").value;
+      // Show alert if input is empty
+      if (!question.trim()) {
+        alert("Please enter a question.");
+        return;
+      }
+      // Send question to backend via POST request
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: question })
+      });
+      // Receive and parse JSON response
+      const data = await res.json();
+      // Update frontend with results from backend
+      document.getElementById("category").innerText = data.category || "Unknown";
+      // Format confidence as percentage if it exists
+      document.getElementById("confidence").innerText = data.confidence !== undefined
+        ? `${(data.confidence * 100).toFixed(1)}%`
+        : "N/A";
+      // Show Socratic response
+      document.getElementById("response").innerText = data.answer || "No response.";
+    }
+  </script>
+</body>
+</html>
