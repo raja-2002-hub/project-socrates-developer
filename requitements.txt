@@ -3,5 +3,5 @@ uvicorn
 openai
 nltk
 scikit-learn
-joblib
 python-dotenv
+joblib
