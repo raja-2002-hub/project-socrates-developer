@@ -7,6 +7,17 @@ from app.socrates import generate_response
 from app.nlp_utils import preprocess_input
 from app.predictor import predict_category  
 
+import nltk
+import os
+
+nltk_data_path = os.path.join(os.getcwd(), "nltk_data")
+os.makedirs(nltk_data_path, exist_ok=True)
+nltk.data.path.append(nltk_data_path)
+
+nltk.download('wordnet', download_dir=nltk_data_path)
+nltk.download('omw-1.4', download_dir=nltk_data_path)
+
+
 
 # creating  a FastAPI instance
 app = FastAPI()
